@@ -7,7 +7,7 @@ def redondear(valor):
 
 st.set_page_config(page_title="Calculadora para Tejedoras", page_icon="🧶")
 
-st.title("Calculadora de Puntos y Vueltas/Filas para Prendas Tejidas" 🧶)
+st.title("Calculadora de Puntos y Vueltas para Prendas Tejidas" 🧶)
 
 st.write("Calcula las medidas exactas para tus proyectos de tejido.")
 # --- NOTA EN RECUADRO CON LETRA CURSIVA ---
@@ -37,7 +37,7 @@ with col4:
 pts_finales = redondear(contorno * pts_por_cm)
 vtas_finales = redondear(largo * vtas_por_cm)
 
-st.success(f"**Puntos necesarios:** {pts_finales} pts\n\n**Vueltas/Filas necesarias:** {vtas/filas_finales} vtas")
+st.success(f"**Puntos necesarios:** {pts_finales} pts\n\n**Vueltas o Filas necesarias:** {vtas_filas_finales} vtas")
 
 # --- 3. MEDIDAS LIBRES ---
 st.header("3. Medidas Libres (Mangas, Puños, Escote)")
