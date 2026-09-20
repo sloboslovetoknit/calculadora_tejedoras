@@ -7,7 +7,7 @@ def redondear(valor):
 
 st.set_page_config(page_title="Calculadora para Tejedoras", page_icon="🧶")
 
-st.title("Calculadora de Puntos y Vueltas para Prendas Tejidas" 🧶)
+st.title("Calculadora de Puntos y Vueltas para Prendas Tejidas 🧶")
 
 st.write("Calcula las medidas exactas para tus proyectos de tejido.")
 # --- NOTA EN RECUADRO CON LETRA CURSIVA ---
