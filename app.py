@@ -37,7 +37,7 @@ with col4:
 pts_finales = redondear(contorno_pecho * pts_por_cm)
 vtas_finales = redondear(largo_prenda * vtas_por_cm)
 
-st.success(f"**Puntos necesarios:** {pts_finales} pts\n\n**Vueltas o Filas necesarias:** {vtas_filas_finales} vtas")
+st.success(f"**Puntos necesarios:** {pts_finales} pts\n\n**Vueltas necesarias:** {vtas_filas_finales} vtas")
 
 # --- 3. MEDIDAS LIBRES ---
 st.header("3. Medidas Libres (Mangas, Puños, Escote)")
