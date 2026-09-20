@@ -34,8 +34,8 @@ with col3:
 with col4:
     largo_prenda = st.number_input("¿Qué largo quieres? (en cm)", min_value=1.0, value=60.0, step=1.0)
 
-pts_finales = redondear(contorno * pts_por_cm)
-vtas_finales = redondear(largo * vtas_por_cm)
+pts_finales = redondear(contorno_pecho * pts_por_cm)
+vtas_finales = redondear(largo_prenda * vtas_por_cm)
 
 st.success(f"**Puntos necesarios:** {pts_finales} pts\n\n**Vueltas o Filas necesarias:** {vtas_filas_finales} vtas")
 
