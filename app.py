@@ -15,7 +15,7 @@ st.set_page_config(
 )
 
 # --- APLICACIÓN DE ESTILOS PERSONALIZADOS (HEX COLORES Y TAMAÑOS) ---
-# Nude: #f7edec | Café: #644b3f | Fucsia: #a02c89
+# Nude: #f7edec | Café: #644b3f | Fucsia: #a02c89 | Azul Claro: #e3f2fd
 st.markdown("""
     <style>
     /* Fondo general */
@@ -64,14 +64,15 @@ st.markdown("""
         color: #ffffff !important;
     }
 
-    /* Recuadros de aviso y destacados */
+    /* RECUADRO DE ADVERTENCIA EN AZUL CLARO CON TEXTO OSCURO */
     .stAlert {
-        background-color: #a02c89 !important;
-        color: #ffffff !important;
+        background-color: #e3f2fd !important;
+        color: #0c5460 !important;
+        border: 1px solid #b8daff !important;
         border-radius: 8px !important;
     }
     .stAlert p {
-        color: #ffffff !important;
+        color: #0c5460 !important;
         font-size: 1.05rem !important;
     }
 
@@ -97,7 +98,7 @@ with col_titulo:
 
 st.write("Calcula las medidas exactas para tus proyectos de tejido.")
 
-# --- NOTA EN RECUADRO DESTACADO ---
+# --- NOTA EN RECUADRO DESTACADO (AZUL CLARO) ---
 st.warning("⚠️ *Es importante hacer tu muestra de tensión para que las medidas se ajusten bien a tu silueta.*")
 
 # --- IDENTIFICACIÓN DEL PROYECTO ---
@@ -127,9 +128,9 @@ st.info(f"Tensión calculada en 1 cm: **{pts_por_cm:.1f} pts/cm** | **{vtas_por_
 st.header("2. Medidas de la Prenda")
 col3, col4 = st.columns(2)
 with col3:
-    contorno_pecho = st.number_input("¿Qué contorno quieres? (en cm)", min_value=1.0, value=100.0, step=1.0)
+    contorno_pecho = st.number_input("¿Qué contorno de pecho quieres? (en cm)", min_value=1.0, value=100.0, step=1.0)
 with col4:
-    largo_prenda = st.number_input("¿Qué largo quieres? (en cm)", min_value=1.0, value=60.0, step=1.0)
+    largo_prenda = st.number_input("¿Qué largo quieres en tu prenda? (en cm)", min_value=1.0, value=60.0, step=1.0)
 
 pts_finales = redondear(contorno_pecho * pts_por_cm)
 vtas_filas_finales = redondear(largo_prenda * vtas_por_cm)
