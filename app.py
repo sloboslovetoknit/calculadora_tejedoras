@@ -138,7 +138,7 @@ with col_logo:
 
 with col_titulo:
     st.title("Calculadora para Tejedoras")
-    st.markdown("[👉 Visita El Club de la Madeja](https://elclubdelamadeja.substack.com)", unsafe_allow_html=True)
+    st.markdown("[👉 Visita El Club de la Madeja](https://susanacuervolobos.substack.com/)", unsafe_allow_html=True)
 
 # --- SUBTÍTULO DESTACADO CON CORREO Y FUENTE MÁS GRANDE ---
 st.markdown(
@@ -230,8 +230,10 @@ MEDIDA LIBRE:
 - {texto_libre}
 
 ========================================
-© 2026 Susana Lobos García - Club de la Madeja
+© 2026 Susana Lobos García 
 Contacto: info@susanalobosdesigns.com
+Visita el Club de la Madeja
+https://susanacuervolobos.substack.com/
 ========================================
 """
 
