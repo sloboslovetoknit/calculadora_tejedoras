@@ -212,7 +212,7 @@ st.write("---")
 col_btn1, col_btn2 = st.columns(2)
 
 resumen_texto = f"""========================================
-RESUMEN DE TEJIDO - EL CLUB DE LA MADEJA
+RESUMEN DE MI PROYECTO - EL CLUB DE LA MADEJA
 ========================================
 Fecha: {fecha_actual}
 Tejedora: {nombre_usuario}
