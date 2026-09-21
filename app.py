@@ -77,10 +77,10 @@ st.markdown("""
         color: #ffffff !important;
     }
 
-    /* RECUADRO INICIAL DE ADVERTENCIA EN AZUL CLARO */
-    .stAlert[data-testid="stNotification"] {
+   /* RECUADRO DE ADVERTENCIA EN AZUL CLARO CON TEXTO OSCURO */
+    .stAlert {
         background-color: #e3f2fd !important;
-        color: #e3f2fd !important;
+        color: #0c5460 !important;
         border: 1px solid #b8daff !important;
         border-radius: 8px !important;
     }
