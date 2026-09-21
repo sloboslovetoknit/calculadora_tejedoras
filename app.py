@@ -2,15 +2,14 @@ import streamlit as st
 from decimal import Decimal, ROUND_HALF_UP
 from datetime import datetime
 
-
-# Función para redondear con regla round half up
+# Función para redondear con la regla round half up
 def redondear(valor):
     d = Decimal(str(valor))
     return int(d.quantize(Decimal('1'), rounding=ROUND_HALF_UP))
 
 # Configuración de la página
 st.set_page_config(
-    page_title="Calculadora de Tejido - Club de la Madeja",
+    page_title="Calculadora para Tejedoras",
     page_icon="🧶",
     layout="centered"
 )
@@ -53,7 +52,7 @@ st.markdown("""
         color: #ffffff !important;
     }
 
-    /* Descargas y Radio Buttons */
+    /* Radio Buttons y Selectores */
     div[data-baseweb="radio"] label p {
         color: #644b3f !important;
     }
@@ -63,15 +62,18 @@ st.markdown("""
 # --- CABECERA CON LOGO Y ENLACE ---
 col_logo, col_titulo = st.columns([1, 3])
 with col_logo:
-    # Carga la imagen del logo subida a GitHub
-    st.image("Logo negro_R.png", width=120) 
+    try:
+        st.image("logo.png", width=120)
+    except:
+        st.markdown("# 🧶")
+
 with col_titulo:
-    st.title("Calculadora de Tejido")
-    st.markdown("[👉 Visita El Club de la Madeja](https://elclubdelamadeja.substack.com)", unsafe_allow_allow_html=True)
+    st.title("Calculadora para Tejedoras")
+    st.markdown("[👉 Visita El Club de la Madeja](https://elclubdelamadeja.substack.com)", unsafe_allow_html=True)
 
 st.write("Calcula las medidas exactas para tus proyectos de tejido.")
 
-# --- NOTA EN RECUADRO FUSCIA ---
+# --- NOTA EN RECUADRO DESTACADO ---
 st.warning("⚠️ *Es importante hacer tu muestra de tensión para que las medidas se ajusten bien a tu silueta.*")
 
 # --- IDENTIFICACIÓN DEL PROYECTO ---
@@ -129,7 +131,6 @@ st.write(f"=> **{texto_libre}**")
 st.write("---")
 col_btn1, col_btn2 = st.columns(2)
 
-# Resumen para descargar
 resumen_texto = f"""========================================
 RESUMEN DE TEJIDO - EL CLUB DE LA MADEJA
 ========================================
@@ -139,7 +140,7 @@ Proyecto: {nombre_proyecto}
 
 MUESTRA DE TENSIÓN:
 - Puntos en 10 cm: {pts_10cm} ({pts_por_cm:.1f} pts/cm)
-- Vueltas/Filas en 10 cm: {vtas_10cm} ({vtas_por_cm:.1f} vtas/cm)
+- Vueltas/Filas en 10 cm: {vtas_10cm} ({vtas_por_cm:.1f} vtas/filas por cm)
 
 CÁLCULOS DE LA PRENDA:
 - Contorno ({contorno_pecho} cm): {pts_finales} puntos
