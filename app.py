@@ -1,6 +1,7 @@
 import streamlit as st
 from decimal import Decimal, ROUND_HALF_UP
 from datetime import datetime
+import os
 
 # Función para redondear con la regla round half up
 def redondear(valor):
@@ -22,11 +23,23 @@ st.markdown("""
     .stApp {
         background-color: #f7edec;
         color: #644b3f;
+        font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', sans-serif;
     }
     
     /* Textos y Encabezados */
     h1, h2, h3, h4, h5, h6, p, label, .stMarkdown {
         color: #644b3f !important;
+        font-family: 'Trebuchet MS', 'Lucida Sans Unicode', sans-serif;
+    }
+
+    /* Subtítulo grande y destacado */
+    .subtitulo-destacado {
+        font-size: 1.35rem !important;
+        font-weight: 600 !important;
+        color: #644b3f !important;
+        margin-top: -10px;
+        margin-bottom: 20px;
+        line-height: 1.4;
     }
     
     /* AUMENTAR TAMAÑO DE ETIQUETAS Y CASILLAS EN MÓVIL */
@@ -64,16 +77,41 @@ st.markdown("""
         color: #ffffff !important;
     }
 
-    /* RECUADRO DE ADVERTENCIA EN AZUL CLARO CON TEXTO OSCURO */
-    .stAlert {
+    /* RECUADRO INICIAL DE ADVERTENCIA EN AZUL CLARO */
+    .stAlert[data-testid="stNotification"] {
         background-color: #e3f2fd !important;
         color: #0c5460 !important;
         border: 1px solid #b8daff !important;
         border-radius: 8px !important;
     }
-    .stAlert p {
+    .stAlert[data-testid="stNotification"] p {
         color: #0c5460 !important;
-        font-size: 1.05rem !important;
+        font-size: 1.1rem !important;
+    }
+
+    /* RECUADROS FUCSIA PARA RESULTADOS (INFO Y SUCCESS) */
+    div[data-testid="stAlert"]:not([data-baseweb="notification"]) {
+        background-color: #a02c89 !important;
+        color: #ffffff !important;
+        border-radius: 8px !important;
+    }
+
+    /* Target específico para st.info y st.success */
+    .stAlertEx {
+        background-color: #a02c89 !important;
+        color: #ffffff !important;
+    }
+
+    /* Estilo del recuadro de resultados personalizado en Fucsia */
+    .recuadro-fucsia {
+        background-color: #a02c89;
+        color: #ffffff;
+        padding: 16px;
+        border-radius: 8px;
+        font-size: 1.15rem;
+        font-weight: 500;
+        margin-top: 10px;
+        margin-bottom: 15px;
     }
 
     /* Radio Buttons y Selectores */
@@ -86,19 +124,30 @@ st.markdown("""
 
 # --- CABECERA CON LOGO Y ENLACE ---
 col_logo, col_titulo = st.columns([1, 3])
+
+# Intento de cargar el logo probando variaciones de nombre
+logo_cargado = False
 with col_logo:
-    try:
-        st.image("Logo.png.png", width=120)
-    except:
+    for pos_nombre in ["Logo.png.png", "logo.png", "Logo.PNG", "logo.PNG"]:
+        if os.path.exists(pos_nombre):
+            st.image(pos_nombre, width=130)
+            logo_cargado = True
+            break
+    if not logo_cargado:
         st.markdown("# 🧶")
 
 with col_titulo:
     st.title("Calculadora para Tejedoras")
     st.markdown("[👉 Visita El Club de la Madeja](https://elclubdelamadeja.substack.com)", unsafe_allow_html=True)
 
-st.write("Calcula las medidas exactas para tus proyectos de tejido.")
+# --- SUBTÍTULO DESTACADO CON CORREO Y FUENTE MÁS GRANDE ---
+st.markdown(
+    '<p class="subtitulo-destacado">Calcula las medidas exactas para tus proyectos de tejido.<br>'
+    '✉️ Consultas: <a href="mailto:info@susanalobosdesigns.com" style="color: #a02c89; text-decoration: underline;">info@susanalobosdesigns.com</a></p>', 
+    unsafe_allow_html=True
+)
 
-# --- NOTA EN RECUADRO DESTACADO (AZUL CLARO) ---
+# --- NOTA EN RECUADRO INICIAL (AZUL CLARO) ---
 st.warning("⚠️ *Es importante hacer tu muestra de tensión para que las medidas se ajusten bien a tu silueta.*")
 
 # --- IDENTIFICACIÓN DEL PROYECTO ---
@@ -107,7 +156,7 @@ col_p1, col_p2 = st.columns(2)
 with col_p1:
     nombre_usuario = st.text_input("Nombre de la tejedora:", value="Alumna")
 with col_p2:
-    nombre_proyecto = st.text_input("Nombre del proyecto:", value="Mi Prenda")
+    nombre_proyecto = st.text_input("Nombre del proyecto:", value="Nombre de Mi Prenda")
 
 fecha_actual = datetime.now().strftime("%Y-%m-%d")
 
@@ -122,7 +171,10 @@ with col2:
 pts_por_cm = pts_10cm / 10.0
 vtas_por_cm = vtas_10cm / 10.0
 
-st.info(f"Tensión calculada en 1 cm: **{pts_por_cm:.1f} pts/cm** | **{vtas_por_cm:.1f} vtas/filas por cm**")
+st.markdown(
+    f'<div class="recuadro-fucsia">Tensión calculada en 1 cm: <b>{pts_por_cm:.1f} pts/cm</b> | <b>{vtas_por_cm:.1f} vtas/filas por cm</b></div>', 
+    unsafe_allow_html=True
+)
 
 # --- 2. MEDIDAS DE LA PRENDA ---
 st.header("2. Medidas de la Prenda")
@@ -130,12 +182,15 @@ col3, col4 = st.columns(2)
 with col3:
     contorno_pecho = st.number_input("¿Qué contorno de pecho quieres? (en cm)", min_value=1.0, value=100.0, step=1.0)
 with col4:
-    largo_prenda = st.number_input("¿Qué largo quieres en tu prenda? (en cm)", min_value=1.0, value=60.0, step=1.0)
+    largo_prenda = st.number_input("¿Qué largo quieres para tu prenda? (en cm)", min_value=1.0, value=60.0, step=1.0)
 
 pts_finales = redondear(contorno_pecho * pts_por_cm)
 vtas_filas_finales = redondear(largo_prenda * vtas_por_cm)
 
-st.success(f"**Puntos necesarios:** {pts_finales} pts\n\n**Vueltas / Filas necesarias:** {vtas_filas_finales} vtas/filas")
+st.markdown(
+    f'<div class="recuadro-fucsia"><b>Puntos necesarios:</b> {pts_finales} pts<br><br><b>Vueltas / Filas necesarias:</b> {vtas_filas_finales} vtas/filas</div>', 
+    unsafe_allow_html=True
+)
 
 # --- 3. MEDIDAS LIBRES ---
 st.header("3. Medidas Libres (Mangas, Puños, Escote)")
