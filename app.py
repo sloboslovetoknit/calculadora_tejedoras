@@ -62,11 +62,11 @@ st.markdown("""
 # --- CABECERA CON LOGO Y ENLACE ---
 col_logo, col_titulo = st.columns([1, 3])
 with col_logo:
-    # Si tienes la URL de tu logo, sustitúyela aquí. Si no, muestra el icono.
-    st.markdown("# 🧶") 
+    # Carga la imagen del logo subida a GitHub
+    st.image("Logo negro_R.png", width=120) 
 with col_titulo:
     st.title("Calculadora de Tejido")
-    st.markdown("[👉 Visita El Club de la Madeja](https://elclubdelamadeja.substack.com)", unsafe_allow_html=True)
+    st.markdown("[👉 Visita El Club de la Madeja](https://elclubdelamadeja.substack.com)", unsafe_allow_allow_html=True)
 
 st.write("Calcula las medidas exactas para tus proyectos de tejido.")
 
