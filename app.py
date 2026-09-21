@@ -230,9 +230,9 @@ MEDIDA LIBRE:
 - {texto_libre}
 
 ========================================
-© 2026 Susana Lobos García 
+     © 2026 Susana Lobos García 
 Contacto: info@susanalobosdesigns.com
-Visita el Club de la Madeja
+.:. Visita el Club de la Madeja .:.
 https://susanacuervolobos.substack.com/
 ========================================
 """
