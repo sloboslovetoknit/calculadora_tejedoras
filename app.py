@@ -57,7 +57,7 @@ st.markdown("""
         color: #644b3f !important;
     }
     </style>
-""", unsafe_allow_allow_html=True)
+""", unsafe_allow_html=True)
 
 # --- CABECERA CON LOGO Y ENLACE ---
 col_logo, col_titulo = st.columns([1, 3])
