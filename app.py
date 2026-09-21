@@ -14,7 +14,7 @@ st.set_page_config(
     layout="centered"
 )
 
-# --- APLICACIÓN DE ESTILOS PERSONALIZADOS (HEX COLORES) ---
+# --- APLICACIÓN DE ESTILOS PERSONALIZADOS (HEX COLORES Y TAMAÑOS) ---
 # Nude: #f7edec | Café: #644b3f | Fucsia: #a02c89
 st.markdown("""
     <style>
@@ -29,15 +29,37 @@ st.markdown("""
         color: #644b3f !important;
     }
     
-    /* Botones primarios y destacados */
-    div.stButton > button {
+    /* AUMENTAR TAMAÑO DE ETIQUETAS Y CASILLAS EN MÓVIL */
+    label p {
+        font-size: 1.15rem !important;
+        font-weight: 600 !important;
+    }
+    
+    input {
+        font-size: 1.25rem !important;
+        padding: 10px !important;
+        color: #644b3f !important;
+    }
+    
+    /* BOTONES TODOS EN FUCSIA CON LETRA BLANCA */
+    div.stButton > button, div.stDownloadButton > button {
         background-color: #a02c89 !important;
         color: #ffffff !important;
         border: none !important;
         border-radius: 8px !important;
         font-weight: bold !important;
+        font-size: 1.1rem !important;
+        padding: 12px 20px !important;
+        width: 100% !important;
     }
-    div.stButton > button:hover {
+    
+    /* Texto dentro del botón (forzar blanco) */
+    div.stButton > button p, div.stDownloadButton > button p, div.stButton > button span {
+        color: #ffffff !important;
+        font-size: 1.1rem !important;
+    }
+
+    div.stButton > button:hover, div.stDownloadButton > button:hover {
         background-color: #80226d !important;
         color: #ffffff !important;
     }
@@ -50,11 +72,13 @@ st.markdown("""
     }
     .stAlert p {
         color: #ffffff !important;
+        font-size: 1.05rem !important;
     }
 
     /* Radio Buttons y Selectores */
     div[data-baseweb="radio"] label p {
         color: #644b3f !important;
+        font-size: 1.1rem !important;
     }
     </style>
 """, unsafe_allow_html=True)
