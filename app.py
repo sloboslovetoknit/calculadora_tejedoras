@@ -80,7 +80,7 @@ st.markdown("""
     /* RECUADRO INICIAL DE ADVERTENCIA EN AZUL CLARO DIRECTO */
     .recuadro-azul-advertencia {
         background-color: #e3f2fd !important;
-        color: #0c5460 !important;
+        color: #e3f2fd !important;
         border: 1px solid #b8daff !important;
         border-radius: 8px !important;
         padding: 15px !important;
