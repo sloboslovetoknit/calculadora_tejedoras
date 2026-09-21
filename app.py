@@ -2,6 +2,7 @@ import streamlit as st
 from decimal import Decimal, ROUND_HALF_UP
 from datetime import datetime
 
+
 # Función para redondear con regla round half up
 def redondear(valor):
     d = Decimal(str(valor))
