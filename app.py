@@ -15,7 +15,7 @@ st.set_page_config(
     layout="centered"
 )
 
-# --- APLICACIÓN DE ESTILOS PERSONALIZADOS (HEX COLORES Y TAMAÑOS) ---
+# --- APLICACIÓN DE ESTILOS PERSONALIZADOS ---
 # Nude: #f7edec | Café: #644b3f | Fucsia: #a02c89 | Azul Claro: #e3f2fd
 st.markdown("""
     <style>
@@ -77,41 +77,28 @@ st.markdown("""
         color: #ffffff !important;
     }
 
-   /* RECUADRO DE ADVERTENCIA EN AZUL CLARO CON TEXTO OSCURO */
-    .stAlert {
+    /* RECUADRO INICIAL DE ADVERTENCIA EN AZUL CLARO DIRECTO */
+    .recuadro-azul-advertencia {
         background-color: #e3f2fd !important;
         color: #0c5460 !important;
         border: 1px solid #b8daff !important;
         border-radius: 8px !important;
-    }
-    .stAlert[data-testid="stNotification"] p {
-        color: #0c5460 !important;
+        padding: 15px !important;
         font-size: 1.1rem !important;
+        margin-top: 10px !important;
+        margin-bottom: 20px !important;
     }
 
-    /* RECUADROS FUCSIA PARA RESULTADOS (INFO Y SUCCESS) */
-    div[data-testid="stAlert"]:not([data-baseweb="notification"]) {
-        background-color: #a02c89 !important;
-        color: #ffffff !important;
-        border-radius: 8px !important;
-    }
-
-    /* Target específico para st.info y st.success */
-    .stAlertEx {
-        background-color: #a02c89 !important;
-        color: #ffffff !important;
-    }
-
-    /* Estilo del recuadro de resultados personalizado en Fucsia */
+    /* RECUADROS FUCSIA PARA RESULTADOS */
     .recuadro-fucsia {
-        background-color: #a02c89;
-        color: #ffffff;
-        padding: 16px;
-        border-radius: 8px;
-        font-size: 1.15rem;
-        font-weight: 500;
-        margin-top: 10px;
-        margin-bottom: 15px;
+        background-color: #a02c89 !important;
+        color: #ffffff !important;
+        padding: 16px !important;
+        border-radius: 8px !important;
+        font-size: 1.15rem !important;
+        font-weight: 500 !important;
+        margin-top: 10px !important;
+        margin-bottom: 15px !important;
     }
 
     /* Radio Buttons y Selectores */
@@ -125,7 +112,6 @@ st.markdown("""
 # --- CABECERA CON LOGO Y ENLACE ---
 col_logo, col_titulo = st.columns([1, 3])
 
-# Intento de cargar el logo probando variaciones de nombre
 logo_cargado = False
 with col_logo:
     for pos_nombre in ["Logo.png.png", "logo.png", "Logo.PNG", "logo.PNG"]:
@@ -147,8 +133,11 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# --- NOTA EN RECUADRO INICIAL (AZUL CLARO) ---
-st.warning("⚠️ *Es importante hacer tu muestra de tensión para que las medidas se ajusten bien a tu silueta.*")
+# --- NOTA EN RECUADRO INICIAL (AZUL CLARO CON LETRAS OSCURAS) ---
+st.markdown(
+    '<div class="recuadro-azul-advertencia">⚠️ <i>Es importante hacer tu muestra de tensión para que las medidas se ajusten bien a tu silueta.</i></div>', 
+    unsafe_allow_html=True
+)
 
 # --- IDENTIFICACIÓN DEL PROYECTO ---
 st.subheader("📋 Datos del Proyecto")
@@ -156,7 +145,7 @@ col_p1, col_p2 = st.columns(2)
 with col_p1:
     nombre_usuario = st.text_input("Nombre de la tejedora:", value="Alumna")
 with col_p2:
-    nombre_proyecto = st.text_input("Nombre del proyecto:", value="Nombre de Mi Prenda")
+    nombre_proyecto = st.text_input("Nombre del proyecto:", value="Mi Prenda")
 
 fecha_actual = datetime.now().strftime("%Y-%m-%d")
 
@@ -230,7 +219,7 @@ MEDIDA LIBRE:
 - {texto_libre}
 
 ========================================
-     © 2026 Susana Lobos García 
+     © 2026 Susana Lobos García
 Contacto: info@susanalobosdesigns.com
 .:. Visita el Club de la Madeja .:.
 https://susanacuervolobos.substack.com/
