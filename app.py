@@ -8,6 +8,30 @@ def redondear(valor):
     d = Decimal(str(valor))
     return int(d.quantize(Decimal('1'), rounding=ROUND_HALF_UP))
 
+# Valores iniciales de todas las casillas.
+# El botón "Reiniciar / Limpiar datos" vuelve a estos valores.
+VALORES_INICIALES = {
+    "nombre_usuario": "Alumna",
+    "nombre_proyecto": "Mi Prenda",
+    "pts_10cm": 20.0,
+    "vtas_10cm": 28.0,
+    "contorno_pecho": 100.0,
+    "largo_prenda": 60.0,
+    "tipo_medida": "Ancho (Puntos)",
+    "nombre_medida": "Ancho de puño",
+    "cm_libre": 18.0,
+}
+
+# La primera vez que se abre la app, se cargan los valores iniciales
+for clave, valor in VALORES_INICIALES.items():
+    if clave not in st.session_state:
+        st.session_state[clave] = valor
+
+# Función que usa el botón de limpiar: devuelve cada casilla a su valor inicial
+def limpiar_datos():
+    for clave, valor in VALORES_INICIALES.items():
+        st.session_state[clave] = valor
+
 # Configuración de la página
 st.set_page_config(
     page_title="Calculadora para Tejedoras",
@@ -143,9 +167,9 @@ st.markdown(
 st.subheader("📋 Datos del Proyecto")
 col_p1, col_p2 = st.columns(2)
 with col_p1:
-    nombre_usuario = st.text_input("Nombre de la tejedora:", value="Alumna")
+    nombre_usuario = st.text_input("Nombre de la tejedora:", key="nombre_usuario")
 with col_p2:
-    nombre_proyecto = st.text_input("Nombre del proyecto:", value="Mi Prenda")
+    nombre_proyecto = st.text_input("Nombre del proyecto:", key="nombre_proyecto")
 
 fecha_actual = datetime.now().strftime("%Y-%m-%d")
 
@@ -153,9 +177,9 @@ fecha_actual = datetime.now().strftime("%Y-%m-%d")
 st.header("1. Datos de la Muestra de Tensión")
 col1, col2 = st.columns(2)
 with col1:
-    pts_10cm = st.number_input("¿Cuántos puntos tienes en 10 cm?", min_value=1.0, value=20.0, step=0.5)
+    pts_10cm = st.number_input("¿Cuántos puntos tienes en 10 cm?", min_value=1.0, step=0.5, key="pts_10cm")
 with col2:
-    vtas_10cm = st.number_input("¿Cuántas vueltas o filas tienes en 10 cm?", min_value=1.0, value=28.0, step=0.5)
+    vtas_10cm = st.number_input("¿Cuántas vueltas o filas tienes en 10 cm?", min_value=1.0, step=0.5, key="vtas_10cm")
 
 pts_por_cm = pts_10cm / 10.0
 vtas_por_cm = vtas_10cm / 10.0
@@ -169,9 +193,9 @@ st.markdown(
 st.header("2. Medidas de la Prenda")
 col3, col4 = st.columns(2)
 with col3:
-    contorno_pecho = st.number_input("¿Qué contorno de pecho quieres? (en cm)", min_value=1.0, value=100.0, step=1.0)
+    contorno_pecho = st.number_input("¿Qué contorno de pecho quieres? (en cm)", min_value=1.0, step=1.0, key="contorno_pecho")
 with col4:
-    largo_prenda = st.number_input("¿Qué largo quieres para tu prenda? (en cm)", min_value=1.0, value=60.0, step=1.0)
+    largo_prenda = st.number_input("¿Qué largo quieres para tu prenda? (en cm)", min_value=1.0, step=1.0, key="largo_prenda")
 
 pts_finales = redondear(contorno_pecho * pts_por_cm)
 vtas_filas_finales = redondear(largo_prenda * vtas_por_cm)
@@ -183,9 +207,9 @@ st.markdown(
 
 # --- 3. MEDIDAS LIBRES ---
 st.header("3. Medidas Libres (Mangas, Puños, Escote)")
-tipo_medida = st.radio("Selecciona el tipo de medida:", ["Ancho (Puntos)", "Largo (Vueltas/Filas)"])
-nombre_medida = st.text_input("Nombre de la medida libre:", value="Ancho de puño")
-cm_libre = st.number_input(f"¿Cuántos cm mide '{nombre_medida}'?:", min_value=0.1, value=18.0, step=0.5)
+tipo_medida = st.radio("Selecciona el tipo de medida:", ["Ancho (Puntos)", "Largo (Vueltas/Filas)"], key="tipo_medida")
+nombre_medida = st.text_input("Nombre de la medida libre:", key="nombre_medida")
+cm_libre = st.number_input(f"¿Cuántos cm mide '{nombre_medida}'?:", min_value=0.1, step=0.5, key="cm_libre")
 
 if tipo_medida == "Ancho (Puntos)":
     res_libre = redondear(cm_libre * pts_por_cm)
@@ -194,7 +218,10 @@ else:
     res_libre = redondear(cm_libre * vtas_por_cm)
     texto_libre = f"Para {nombre_medida} ({cm_libre} cm) necesitas: {res_libre} vtas/filas"
 
-st.write(f"=> **{texto_libre}**")
+st.markdown(
+    f'<div class="recuadro-fucsia">Para <b>{nombre_medida}</b> ({cm_libre} cm) necesitas: <b>{res_libre} {"pts" if tipo_medida == "Ancho (Puntos)" else "vtas/filas"}</b></div>',
+    unsafe_allow_html=True
+)
 
 # --- BOTONES DE DESCARGA Y LIMPIEZA ---
 st.write("---")
@@ -235,8 +262,7 @@ with col_btn1:
     )
 
 with col_btn2:
-    if st.button("🔄 Reiniciar / Limpiar datos"):
-        st.rerun()
+    st.button("🔄 Reiniciar / Limpiar datos", on_click=limpiar_datos)
 
 # --- COPYRIGHT Y CONTACTO AL FINAL ---
 st.write("---")
