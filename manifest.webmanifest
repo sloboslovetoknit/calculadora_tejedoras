@@ -1,0 +1,16 @@
+{
+  "name": "Calculadora para Tejedoras",
+  "short_name": "Calculadora",
+  "description": "Calcula puntos y vueltas a partir de tu muestra de tensión. Club de la Madeja.",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7edec",
+  "theme_color": "#a02c89",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

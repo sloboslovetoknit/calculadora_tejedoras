@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Calculadora para Tejedoras</title>
+<meta name="description" content="Calcula puntos y vueltas a partir de tu muestra de tensión. Club de la Madeja.">
+<meta name="theme-color" content="#a02c89">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Calculadora">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+<style>
+/* =====================================================================
+   COLORES (cámbialos aquí y se actualizan en toda la app)
+   Nude: #f7edec | Café: #644b3f | Fucsia: #a02c89 | Azul claro: #e3f2fd
+   ===================================================================== */
+:root {
+  --nude: #f7edec;
+  --cafe: #644b3f;
+  --fucsia: #a02c89;
+  --fucsia-oscuro: #80226d;
+  --azul-claro: #e3f2fd;
+  --azul-borde: #b8daff;
+  --borde-suave: rgba(100, 75, 63, 0.22);
+  --fuente: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background-color: var(--nude);
+  color: var(--cafe);
+  font-family: var(--fuente);
+  line-height: 1.5;
+}
+
+main {
+  max-width: 736px;
+  margin: 0 auto;
+  padding: 2.5rem 1rem 3rem;
+}
+
+h1, h2, h3 { color: var(--cafe); font-weight: 700; line-height: 1.2; }
+h1 { font-size: 2.3rem; margin: 0 0 0.4rem; }
+h2 { font-size: 1.8rem; margin: 2.2rem 0 1rem; }
+h3 { font-size: 1.4rem; margin: 1.6rem 0 0.8rem; }
+p { margin: 0 0 0.8rem; }
+a { color: var(--fucsia); }
+
+/* --- Cabecera --- */
+.cabecera { display: grid; grid-template-columns: 1fr 3fr; gap: 1rem; align-items: center; }
+.cabecera img { width: 130px; max-width: 100%; height: auto; display: block; }
+.cabecera .ovillo { font-size: 3rem; }
+.enlace-club { font-size: 1rem; }
+
+.subtitulo-destacado {
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin: 1rem 0 1.25rem;
+  line-height: 1.4;
+}
+
+/* --- Recuadros --- */
+.recuadro-azul-advertencia {
+  background-color: var(--azul-claro);
+  border: 1px solid var(--azul-borde);
+  border-radius: 8px;
+  padding: 15px;
+  font-size: 1.1rem;
+  margin: 10px 0 20px;
+}
+
+.recuadro-fucsia {
+  background-color: var(--fucsia);
+  color: #ffffff;
+  padding: 16px;
+  border-radius: 8px;
+  font-size: 1.15rem;
+  font-weight: 500;
+  margin: 10px 0 15px;
+}
+
+.recuadro-pendiente {
+  border: 1px dashed var(--cafe);
+  border-radius: 8px;
+  padding: 14px;
+  font-size: 1.05rem;
+  font-style: italic;
+  margin: 10px 0 15px;
+}
+
+/* --- Casillas --- */
+.columnas { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+@media (max-width: 640px) {
+  .columnas { grid-template-columns: 1fr; gap: 0; }
+  .cabecera { grid-template-columns: 1fr 2.2fr; }
+  .cabecera img { width: 100px; }
+  h1 { font-size: 1.9rem; }
+  h2 { font-size: 1.55rem; }
+  main { padding-top: 1.5rem; }
+}
+
+.campo { margin-bottom: 1rem; }
+
+.campo label, .etiqueta {
+  display: block;
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+}
+
+input[type="text"] {
+  width: 100%;
+  font-family: var(--fuente);
+  font-size: 1.25rem;
+  padding: 10px 12px;
+  color: var(--cafe);
+  background: #ffffff;
+  border: 1px solid var(--borde-suave);
+  border-radius: 8px;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+input[type="text"]:focus { border-color: var(--fucsia); box-shadow: 0 0 0 2px rgba(160, 44, 137, 0.2); }
+input::placeholder { color: rgba(100, 75, 63, 0.45); }
+input.invalido { border-color: #c0392b; }
+
+.error-campo { color: #c0392b; font-size: 0.95rem; margin-top: 0.25rem; display: none; }
+
+/* Ayuda (el "?" junto a la holgura) */
+.ayuda-boton {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 1.4rem; height: 1.4rem; margin-left: 0.35rem;
+  border-radius: 50%; border: 1px solid var(--cafe);
+  background: transparent; color: var(--cafe);
+  font-size: 0.85rem; font-weight: 700; cursor: pointer; vertical-align: middle;
+  padding: 0;
+}
+.ayuda-texto { display: none; font-size: 0.98rem; font-weight: 400; margin: 0.2rem 0 0.5rem; }
+.ayuda-texto.visible { display: block; }
+
+/* Opciones Ancho / Largo */
+.opciones { display: flex; flex-wrap: wrap; gap: 0.4rem 1.4rem; margin-bottom: 1rem; }
+.opciones label { display: flex; align-items: center; gap: 0.45rem; font-size: 1.1rem; cursor: pointer; }
+.opciones input[type="radio"] { width: 1.2rem; height: 1.2rem; accent-color: var(--fucsia); margin: 0; }
+
+/* Recuadro de cada medida libre */
+.medida {
+  border: 1px solid var(--borde-suave);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+.medida-titulo { font-weight: 700; margin-bottom: 0.6rem; }
+
+/* --- Botones (todos fucsia con letra blanca) --- */
+button.boton {
+  display: block;
+  width: 100%;
+  background-color: var(--fucsia);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--fuente);
+  font-weight: bold;
+  font-size: 1.1rem;
+  padding: 12px 20px;
+  cursor: pointer;
+  margin-bottom: 0.75rem;
+}
+button.boton:hover, button.boton:active { background-color: var(--fucsia-oscuro); }
+
+.botones-finales { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; }
+.botones-finales button.boton { margin-bottom: 0; height: 100%; }
+@media (max-width: 640px) { .botones-finales { grid-template-columns: 1fr; } }
+
+hr { border: none; border-top: 1px solid var(--borde-suave); margin: 2rem 0; }
+
+.pie { font-size: 0.9rem; opacity: 0.8; }
+.pie p { margin: 0 0 0.3rem; }
+
+/* Aviso breve (por ejemplo, "Resumen copiado") */
+.aviso {
+  position: fixed; left: 50%; bottom: 1.5rem; transform: translateX(-50%);
+  background: var(--cafe); color: #fff; padding: 0.7rem 1.2rem; border-radius: 8px;
+  font-size: 1rem; opacity: 0; pointer-events: none; transition: opacity 0.25s;
+  max-width: 90%; text-align: center;
+}
+.aviso.visible { opacity: 1; }
+
+/* Pantalla del código de acceso (solo si está activado) */
+.acceso {
+  position: fixed; inset: 0; background: var(--nude); display: none;
+  align-items: center; justify-content: center; padding: 1.5rem; z-index: 10;
+}
+.acceso.visible { display: flex; }
+.acceso-caja { max-width: 380px; width: 100%; text-align: center; }
+.acceso-caja .ovillo { font-size: 3rem; }
+</style>
+</head>
+<body>
+
+<!-- ============ PANTALLA DE CÓDIGO DE ACCESO (opcional) ============ -->
+<div class="acceso" id="acceso">
+  <div class="acceso-caja">
+    <div class="ovillo">🧶</div>
+    <h2 style="margin-top:0.5rem">Calculadora para Tejedoras</h2>
+    <p>Escribe el código de acceso que te entregó tu profesora.</p>
+    <div class="campo">
+      <input type="text" id="codigo" autocomplete="off" autocapitalize="characters" placeholder="Código">
+      <div class="error-campo" id="codigo-error">Ese código no es correcto. Revísalo e intenta otra vez.</div>
+    </div>
+    <button class="boton" id="codigo-entrar">Entrar</button>
+  </div>
+</div>
+
+<main>
+
+  <!-- ============ CABECERA ============ -->
+  <div class="cabecera">
+    <div>
+      <img id="logo" src="Logo.png.png" alt="Logo Susana Lobos desiGns">
+      <div class="ovillo" id="logo-reemplazo" style="display:none">🧶</div>
+    </div>
+    <div>
+      <h1 id="titulo"></h1>
+      <a class="enlace-club" id="enlace-club" target="_blank" rel="noopener"></a>
+    </div>
+  </div>
+
+  <p class="subtitulo-destacado">
+    <span id="subtitulo"></span><br>
+    ✉️ Consultas: <a id="correo-enlace"></a>
+  </p>
+
+  <div class="recuadro-azul-advertencia">⚠️ <i id="aviso-muestra"></i></div>
+
+  <!-- ============ DATOS DEL PROYECTO ============ -->
+  <h3>📋 Datos del Proyecto</h3>
+  <div class="columnas">
+    <div class="campo">
+      <label for="nombre_usuario">Nombre de la tejedora:</label>
+      <input type="text" id="nombre_usuario" placeholder="Ej: Alumna">
+    </div>
+    <div class="campo">
+      <label for="nombre_proyecto">Nombre del proyecto:</label>
+      <input type="text" id="nombre_proyecto" placeholder="Ej: Mi Prenda">
+    </div>
+  </div>
+
+  <!-- ============ 1. MUESTRA ============ -->
+  <h2>1. Datos de la Muestra de Tensión</h2>
+  <div class="columnas">
+    <div class="campo">
+      <label for="pts_10cm">¿Cuántos puntos tienes en 10 cm?</label>
+      <input type="text" inputmode="decimal" class="numero" data-min="1" id="pts_10cm" placeholder="Ej: 20">
+      <div class="error-campo"></div>
+    </div>
+    <div class="campo">
+      <label for="vtas_10cm">¿Cuántas vueltas o filas tienes en 10 cm?</label>
+      <input type="text" inputmode="decimal" class="numero" data-min="1" id="vtas_10cm" placeholder="Ej: 28">
+      <div class="error-campo"></div>
+    </div>
+  </div>
+  <div id="resultado-muestra"></div>
+
+  <!-- ============ 2. MEDIDAS DE LA PRENDA ============ -->
+  <h2>2. Medidas de la Prenda</h2>
+  <div class="columnas">
+    <div class="campo">
+      <label for="contorno_cuerpo">Contorno de pecho de tu cuerpo (en cm)</label>
+      <input type="text" inputmode="decimal" class="numero" data-min="1" id="contorno_cuerpo" placeholder="Ej: 90">
+      <div class="error-campo"></div>
+    </div>
+    <div class="campo">
+      <label for="holgura">Holgura que quieres agregar (en cm)
+        <button type="button" class="ayuda-boton" id="ayuda-holgura" aria-label="¿Qué es la holgura?">?</button>
+      </label>
+      <div class="ayuda-texto" id="ayuda-holgura-texto">
+        La holgura es la diferencia entre tu cuerpo y la prenda. Puede ser 0, positiva
+        (prenda más suelta) o negativa (prenda más ajustada; escribe un signo menos, por ejemplo -4).
+        Si la dejas vacía, se cuenta como 0.
+      </div>
+      <input type="text" inputmode="text" class="numero" data-min="-50" id="holgura" placeholder="Ej: 10">
+      <div class="error-campo"></div>
+    </div>
+  </div>
+  <div class="campo">
+    <label for="largo_prenda">¿Qué largo quieres para tu prenda? (en cm)</label>
+    <input type="text" inputmode="decimal" class="numero" data-min="1" id="largo_prenda" placeholder="Ej: 60">
+    <div class="error-campo"></div>
+  </div>
+  <div id="resultado-prenda"></div>
+
+  <!-- ============ 3. MEDIDAS LIBRES ============ -->
+  <h2>3. Medidas Libres (Mangas, Puños, Escote)</h2>
+  <p>Agrega todas las medidas que necesites para tu proyecto.</p>
+  <div id="lista-medidas"></div>
+  <button class="boton" id="agregar-medida">➕ Agregar otra medida</button>
+
+  <hr>
+
+  <!-- ============ BOTONES FINALES ============ -->
+  <div class="botones-finales">
+    <button class="boton" id="compartir">📤 Compartir resumen</button>
+    <button class="boton" id="descargar">📥 Descargar resumen (.txt)</button>
+    <button class="boton" id="limpiar">🔄 Reiniciar / Limpiar datos</button>
+  </div>
+
+  <hr>
+  <div class="pie">
+    <p id="pie-copyright"></p>
+    <p>📧 Consultas y preguntas: <span id="pie-correo"></span></p>
+  </div>
+</main>
+
+<div class="aviso" id="aviso"></div>
+
+<script>
+/* =====================================================================
+   TEXTOS Y DATOS QUE PUEDES CAMBIAR FÁCILMENTE
+   (cambia solo lo que está entre comillas)
+   ===================================================================== */
+const CONFIG = {
+  titulo: "Calculadora para Tejedoras",
+  subtitulo: "Calcula las medidas exactas para tus proyectos de tejido.",
+  avisoMuestra: "Es importante hacer tu muestra de tensión para que las medidas se ajusten bien a tu silueta.",
+  nombreClub: "El Club de la Madeja",
+  enlaceClub: "https://susanacuervolobos.substack.com/",
+  correo: "info@susanalobosdesigns.com",
+  autora: "Susana Lobos García",
+  anio: "2026",
+
+  // CÓDIGO DE ACCESO
+  // Déjalo vacío ("") para que la app abra sin código.
+  // Para activarlo, escribe un código entre las comillas, por ejemplo: "MADEJA2026".
+  // Cada alumna lo escribe una sola vez en su celular; la app lo recuerda.
+  codigoAcceso: ""
+};
+
+/* =====================================================================
+   DE AQUÍ HACIA ABAJO ESTÁN LOS CÁLCULOS (no es necesario tocarlos)
+   ===================================================================== */
+
+// --- Textos de la página a partir de CONFIG ---
+document.getElementById("titulo").textContent = CONFIG.titulo;
+document.getElementById("subtitulo").textContent = CONFIG.subtitulo;
+document.getElementById("aviso-muestra").textContent = CONFIG.avisoMuestra;
+const enlaceClub = document.getElementById("enlace-club");
+enlaceClub.textContent = "👉 Visita " + CONFIG.nombreClub;
+enlaceClub.href = CONFIG.enlaceClub;
+const correoEnlace = document.getElementById("correo-enlace");
+correoEnlace.textContent = CONFIG.correo;
+correoEnlace.href = "mailto:" + CONFIG.correo;
+document.getElementById("pie-copyright").textContent =
+  "© " + CONFIG.anio + " " + CONFIG.autora + " - " + CONFIG.nombreClub.replace(/^El /, "") + ". Todos los derechos reservados.";
+document.getElementById("pie-correo").textContent = CONFIG.correo;
+
+// Si no está el logo, se muestra el ovillo 🧶
+document.getElementById("logo").addEventListener("error", function () {
+  this.style.display = "none";
+  document.getElementById("logo-reemplazo").style.display = "block";
+});
+
+// --- Utilidades de números ---
+// Lee una casilla: acepta coma o punto. Devuelve null si está vacía o no es válida.
+function leerNumero(input) {
+  const texto = input.value.trim().replace(",", ".");
+  const error = input.parentElement.querySelector(".error-campo");
+  input.classList.remove("invalido");
+  if (error) error.style.display = "none";
+  if (texto === "" || texto === "-") return null;
+  const valor = Number(texto);
+  const minimo = Number(input.dataset.min);
+  let mensaje = "";
+  if (!isFinite(valor)) mensaje = "Escribe solo números (por ejemplo 20 o 22,5).";
+  else if (!isNaN(minimo) && valor < minimo) mensaje = "El número mínimo es " + fmt(minimo) + ".";
+  if (mensaje) {
+    input.classList.add("invalido");
+    if (error) { error.textContent = mensaje; error.style.display = "block"; }
+    return null;
+  }
+  return valor;
+}
+
+// Redondeo "hacia arriba desde la mitad" (40,5 → 41), igual que en la app anterior
+function redondear(valor) {
+  return Math.round(Number(valor.toFixed(10)));
+}
+
+// Muestra hasta 2 decimales, sin ceros sobrantes (2.25 / 2.5 / 2)
+function fmt(valor) {
+  const r = Math.round(Number((valor * 100).toFixed(8))) / 100;
+  return String(parseFloat(r.toFixed(2)));
+}
+
+function valorORaya(valor, unidad) {
+  return valor === null ? "—" : fmt(valor) + (unidad || "");
+}
+
+function escaparHTML(texto) {
+  return texto.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+function recuadroFucsia(html) { return '<div class="recuadro-fucsia">' + html + "</div>"; }
+function recuadroPendiente(texto) { return '<div class="recuadro-pendiente">' + texto + "</div>"; }
+
+// --- Medidas libres ---
+let siguienteId = 0;
+const listaMedidas = document.getElementById("lista-medidas");
+
+function agregarMedida() {
+  const id = siguienteId++;
+  const div = document.createElement("div");
+  div.className = "medida";
+  div.dataset.id = id;
+  div.innerHTML =
+    '<div class="medida-titulo"></div>' +
+    '<div class="campo"><label for="nombre_medida_' + id + '">Nombre de la medida:</label>' +
+    '<input type="text" id="nombre_medida_' + id + '" class="nombre-medida" placeholder="Ej: Ancho de puño"></div>' +
+    '<span class="etiqueta">Tipo de medida:</span>' +
+    '<div class="opciones">' +
+      '<label><input type="radio" name="tipo_' + id + '" value="ancho" checked> Ancho (Puntos)</label>' +
+      '<label><input type="radio" name="tipo_' + id + '" value="largo"> Largo (Vueltas/Filas)</label>' +
+    "</div>" +
+    '<div class="campo"><label for="cm_libre_' + id + '" class="etiqueta-cm"></label>' +
+    '<input type="text" inputmode="decimal" class="numero cm-libre" data-min="0.1" id="cm_libre_' + id + '" placeholder="Ej: 18">' +
+    '<div class="error-campo"></div></div>' +
+    '<div class="resultado-medida"></div>' +
+    '<button type="button" class="boton quitar-medida">🗑️ Quitar esta medida</button>';
+  listaMedidas.appendChild(div);
+  div.querySelector(".quitar-medida").addEventListener("click", () => { div.remove(); calcular(); });
+  calcular();
+}
+
+// --- Cálculo principal: se ejecuta cada vez que cambia algo ---
+let resumenActual = "";
+
+function calcular() {
+  const $ = id => document.getElementById(id);
+  const nombreUsuario = $("nombre_usuario").value.trim();
+  const nombreProyecto = $("nombre_proyecto").value.trim();
+  const pts10 = leerNumero($("pts_10cm"));
+  const vtas10 = leerNumero($("vtas_10cm"));
+  const contornoCuerpo = leerNumero($("contorno_cuerpo"));
+  const holgura = leerNumero($("holgura"));
+  const largo = leerNumero($("largo_prenda"));
+
+  // 1. Muestra
+  const ptsPorCm = pts10 !== null ? pts10 / 10 : null;
+  const vtasPorCm = vtas10 !== null ? vtas10 / 10 : null;
+  if (ptsPorCm === null && vtasPorCm === null) {
+    $("resultado-muestra").innerHTML = recuadroPendiente("Escribe los puntos y vueltas de tu muestra para ver tu tensión en 1 cm.");
+  } else {
+    const partes = [];
+    if (ptsPorCm !== null) partes.push("<b>" + fmt(ptsPorCm) + " pts/cm</b>");
+    if (vtasPorCm !== null) partes.push("<b>" + fmt(vtasPorCm) + " vtas/filas por cm</b>");
+    $("resultado-muestra").innerHTML = recuadroFucsia("Tensión calculada en 1 cm: " + partes.join(" | "));
+  }
+
+  // 2. Prenda
+  const holguraCm = holgura !== null ? holgura : 0;
+  let contornoPrenda = contornoCuerpo !== null ? contornoCuerpo + holguraCm : null;
+  let ptsFinales = null, vtasFinales = null;
+  const lineas = [];
+  let avisoPrenda = "";
+  if (contornoPrenda !== null && contornoPrenda <= 0) {
+    avisoPrenda = recuadroPendiente("La holgura negativa es mayor que el contorno del cuerpo. Revisa los números.");
+    contornoPrenda = null;
+  } else if (contornoPrenda !== null) {
+    let texto = "<b>Contorno de la prenda:</b> " + fmt(contornoPrenda) + " cm";
+    if (holguraCm !== 0) {
+      const signo = holguraCm > 0 ? "+" : "−";
+      texto += " (" + fmt(contornoCuerpo) + " cm " + signo + " " + fmt(Math.abs(holguraCm)) + " cm de holgura)";
+    }
+    lineas.push(texto);
+    if (ptsPorCm !== null) {
+      ptsFinales = redondear(contornoPrenda * ptsPorCm);
+      lineas.push("<b>Puntos necesarios:</b> " + ptsFinales + " pts");
+    }
+  }
+  if (largo !== null && vtasPorCm !== null) {
+    vtasFinales = redondear(largo * vtasPorCm);
+    lineas.push("<b>Vueltas / Filas necesarias:</b> " + vtasFinales + " vtas/filas");
+  }
+  $("resultado-prenda").innerHTML = avisoPrenda + (lineas.length
+    ? recuadroFucsia(lineas.join("<br><br>"))
+    : (avisoPrenda ? "" : recuadroPendiente("Completa tu muestra y las medidas para ver cuántos puntos y vueltas necesitas.")));
+
+  // 3. Medidas libres
+  const medidas = listaMedidas.querySelectorAll(".medida");
+  const resumenMedidas = [];
+  medidas.forEach((div, i) => {
+    div.querySelector(".medida-titulo").textContent = "Medida " + (i + 1);
+    div.querySelector(".quitar-medida").style.display = medidas.length > 1 ? "block" : "none";
+    const nombre = div.querySelector(".nombre-medida").value.trim();
+    const etiqueta = nombre || "esta medida";
+    div.querySelector(".etiqueta-cm").textContent = "¿Cuántos cm mide " + etiqueta + "?";
+    const esAncho = div.querySelector('input[type="radio"]:checked').value === "ancho";
+    const cm = leerNumero(div.querySelector(".cm-libre"));
+    const porCm = esAncho ? ptsPorCm : vtasPorCm;
+    const unidad = esAncho ? "pts" : "vtas/filas";
+    const caja = div.querySelector(".resultado-medida");
+    if (cm === null) {
+      caja.innerHTML = recuadroPendiente("Escribe los cm para ver el resultado.");
+    } else if (porCm === null) {
+      caja.innerHTML = recuadroPendiente("Completa tu muestra de tensión (sección 1) para ver el resultado.");
+    } else {
+      const res = redondear(cm * porCm);
+      caja.innerHTML = recuadroFucsia("Para <b>" + escaparHTML(etiqueta) + "</b> (" + fmt(cm) + " cm) necesitas: <b>" + res + " " + unidad + "</b>");
+      resumenMedidas.push("- " + etiqueta + " (" + fmt(cm) + " cm): " + res + " " + unidad);
+    }
+  });
+
+  // Resumen (mismo formato que la app anterior)
+  const hoy = new Date();
+  const fecha = hoy.getFullYear() + "-" + String(hoy.getMonth() + 1).padStart(2, "0") + "-" + String(hoy.getDate()).padStart(2, "0");
+  resumenActual =
+`========================================
+RESUMEN DE MI PROYECTO - ${CONFIG.nombreClub.replace(/^El /, "EL ").toUpperCase()}
+========================================
+Fecha: ${fecha}
+Tejedora: ${nombreUsuario || "—"}
+Proyecto: ${nombreProyecto || "—"}
+
+MUESTRA DE TENSIÓN:
+- Puntos en 10 cm: ${valorORaya(pts10)}${ptsPorCm !== null ? " (" + fmt(ptsPorCm) + " pts/cm)" : ""}
+- Vueltas/Filas en 10 cm: ${valorORaya(vtas10)}${vtasPorCm !== null ? " (" + fmt(vtasPorCm) + " vtas/filas por cm)" : ""}
+
+CÁLCULOS DE LA PRENDA:
+- Contorno del cuerpo: ${valorORaya(contornoCuerpo, " cm")}
+- Holgura: ${fmt(holguraCm)} cm
+- Contorno de la prenda (${valorORaya(contornoPrenda, " cm")}): ${ptsFinales !== null ? ptsFinales : "—"} puntos
+- Largo (${valorORaya(largo, " cm")}): ${vtasFinales !== null ? vtasFinales : "—"} vueltas/filas
+
+MEDIDAS LIBRES:
+${resumenMedidas.length ? resumenMedidas.join("\n") : "- (sin medidas libres)"}
+
+========================================
+     © ${CONFIG.anio} ${CONFIG.autora}
+Contacto: ${CONFIG.correo}
+.:. Visita ${CONFIG.nombreClub.replace(/^El /, "el ")} .:.
+${CONFIG.enlaceClub}
+========================================
+`;
+}
+
+// --- Aviso breve en pantalla ---
+let temporizadorAviso;
+function mostrarAviso(texto) {
+  const aviso = document.getElementById("aviso");
+  aviso.textContent = texto;
+  aviso.classList.add("visible");
+  clearTimeout(temporizadorAviso);
+  temporizadorAviso = setTimeout(() => aviso.classList.remove("visible"), 2500);
+}
+
+function nombreArchivo() {
+  const proyecto = document.getElementById("nombre_proyecto").value.trim() || "Mi_Prenda";
+  return "Resumen_Tejido_" + proyecto.replace(/\s+/g, "_") + ".txt";
+}
+
+// --- Botones ---
+document.getElementById("agregar-medida").addEventListener("click", agregarMedida);
+
+document.getElementById("descargar").addEventListener("click", () => {
+  calcular();
+  const blob = new Blob([resumenActual], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = nombreArchivo();
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+});
+
+document.getElementById("compartir").addEventListener("click", async () => {
+  calcular();
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: "Resumen de mi proyecto", text: resumenActual });
+    } catch (e) { /* la alumna cerró la ventana de compartir: no pasa nada */ }
+    return;
+  }
+  try {
+    await navigator.clipboard.writeText(resumenActual);
+    mostrarAviso("Resumen copiado. Ya puedes pegarlo en WhatsApp o en un correo.");
+  } catch (e) {
+    mostrarAviso("No se pudo compartir desde aquí. Usa el botón Descargar.");
+  }
+});
+
+document.getElementById("limpiar").addEventListener("click", () => {
+  document.querySelectorAll("main input[type='text']").forEach(input => {
+    input.value = "";
+    input.classList.remove("invalido");
+  });
+  document.querySelectorAll(".error-campo").forEach(e => e.style.display = "none");
+  listaMedidas.innerHTML = "";
+  agregarMedida();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+document.getElementById("ayuda-holgura").addEventListener("click", () => {
+  document.getElementById("ayuda-holgura-texto").classList.toggle("visible");
+});
+
+// Recalcular al escribir o elegir una opción
+document.querySelector("main").addEventListener("input", calcular);
+document.querySelector("main").addEventListener("change", calcular);
+
+// Al empezar: una medida libre vacía
+agregarMedida();
+
+// --- Código de acceso (solo si está activado en CONFIG) ---
+(function () {
+  const codigo = CONFIG.codigoAcceso.trim().toUpperCase();
+  if (!codigo) return;
+  let guardado = "";
+  try { guardado = localStorage.getItem("codigo_acceso") || ""; } catch (e) {}
+  if (guardado === codigo) return;
+  const pantalla = document.getElementById("acceso");
+  const input = document.getElementById("codigo");
+  pantalla.classList.add("visible");
+  function entrar() {
+    if (input.value.trim().toUpperCase() === codigo) {
+      try { localStorage.setItem("codigo_acceso", codigo); } catch (e) {}
+      pantalla.classList.remove("visible");
+    } else {
+      document.getElementById("codigo-error").style.display = "block";
+    }
+  }
+  document.getElementById("codigo-entrar").addEventListener("click", entrar);
+  input.addEventListener("keydown", e => { if (e.key === "Enter") entrar(); });
+})();
+
+// --- Para que funcione sin internet e instalada en el celular ---
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
